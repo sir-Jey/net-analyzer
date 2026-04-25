@@ -3,7 +3,7 @@
 #include <string.h>
 #include <libnet.h>
 
-#define DEVICE "en0"
+#define DEVICE "en0" // for test  
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
