@@ -21,12 +21,6 @@ MacOS
 brew install libpcap
 ```
 
-### Linux (Ubuntu/Debian)
-
-```bash
-sudo apt-get install libpcap-dev
-```
-
 ## Компиляция и запуск
 
 ```bash
@@ -85,5 +79,3 @@ gcc -o synsend synsend.c -lnet
 1. Запустить сниффер: `sudo ./net-analyzer`
 2. В другом терминале отправить тестовый SYN: `sudo ./tools/synsend 93.184.216.34 80`
 3. Сниффер должен показать отправленный пакет.
-
-> Примечание: На macOS отправка сырых пакетов может быть ограничена системой. Для полноценной работы synsend рекомендуется использовать Linux.
