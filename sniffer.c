@@ -20,6 +20,8 @@
 #define COLOR_YELLOW        "\033[33m"
 #define COLOR_RESET         "\033[0m"
 
+/* будет доработка кода */
+
 pcap_t *dev;
 int user_num_pckgs = -1;
 char user_device[256]; 
