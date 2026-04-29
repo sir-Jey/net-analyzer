@@ -1,3 +1,9 @@
+/* инструмент тестирования сниффера: 
+ * отправка SYN-пакета используя TCP-протокол. 
+ *
+ * Другие поля для заголовка TCP указаны в функциях libnet_build_tcp() и libnet_build_ipv4()
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +14,7 @@
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         fprintf(stderr, "usage: %s <ip> <port>\n", argv[0]);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     const char *dst_ip = argv[1];
@@ -16,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     if (dst_port < 1 || dst_port > 65535) {
         fprintf(stderr, "invalid port\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     libnet_t *l;
@@ -25,7 +31,7 @@ int main(int argc, char *argv[]) {
     l = libnet_init(LIBNET_LINK, DEVICE, errbuf);
     if (!l) {
         fprintf(stderr, "libnet_init: %s\n", errbuf);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     libnet_seed_prand(l);
@@ -40,9 +46,9 @@ int main(int argc, char *argv[]) {
         0
     );
     if (eth == -1) {
-        fprintf(stderr, "can't build ethernet: %s\n", libnet_geterror(l));
+        fprintf(stderr, "невозможно сформировать ethernet-заголовок для кадра: %s\n", libnet_geterror(l));
         libnet_destroy(l);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     libnet_ptag_t tcp = libnet_build_tcp(
@@ -61,9 +67,9 @@ int main(int argc, char *argv[]) {
         0                          
     );
     if (tcp == -1) {
-        fprintf(stderr, "can't build tcp: %s\n", libnet_geterror(l));
+        fprintf(stderr, "невозможно сформировать tcp-заголовок для сегмента: %s\n", libnet_geterror(l));
         libnet_destroy(l);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     libnet_ptag_t ip = libnet_build_ipv4(
@@ -82,18 +88,18 @@ int main(int argc, char *argv[]) {
         0
     );
     if (ip == -1) {
-        fprintf(stderr, "can't build ipv4: %s\n", libnet_geterror(l));
+        fprintf(stderr, "невозможно сформировать ipv4-заголовок для дейтаграммы: %s\n", libnet_geterror(l));
         libnet_destroy(l);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     if (libnet_write(l) == -1) {
         fprintf(stderr, "libnet_write: %s\n", libnet_geterror(l));
         libnet_destroy(l);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
-    printf("SYN sent to %s:%d\n", dst_ip, dst_port);
+    printf("SYN отправлен %s:%d\n", dst_ip, dst_port);
     libnet_destroy(l);
-    return 0;
+    exit(EXIT_SUCCESS);
 }
